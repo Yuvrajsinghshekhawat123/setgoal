@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Font Awesome CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+     
+  </head>
+  <body class="bg-green-50">
+    <div>
+      <h1
+        class="text-2xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-green-800 font-bold text-center my-16"
+      >
+        Focus on <span class="text-stone-700">Today</span>
+      </h1>
+    </div>
+
+    <section class="h-auto w-auto flex justify-center items-center">
+      <div class="bg-white shadow-lg rounded-lg p-4">
+        <div class="flex flex-col gap-4">
+          <h1 class="text-2xl font-bold">Today ☀️</h1>
+          <h1 class="text-gray-400">Rais th bar by completing yours goils!</h1>
+
+          <div class="w-auto h-4 rounded-lg bg-green-100 relative flex items-center">
+            <div class="complete    z-10">
+              <!-- we will add this using js -->
+              <!-- <p class=" text-sm font-semibold pl-2">2/3 complete</p> -->
+            </div>
+            <div
+              id="progressBar"
+              class="absolute h-full bg-green-600 rounded-lg transition-all duration-500 ease-in-out "
+              style="width: 0%"
+            ></div>
+          </div>
+
+          <div class="worning text-red-600 text-sm">
+            <!-- we will add this using js -->
+            <!-- <h1>Please fill all 3 goals!</h1> -->
+          </div>
+          <div class="flex items-center h-10 p-4 border rounded-lg gap-4">
+            <div
+              name=""
+              class="checkbox flex items-center justify-center w-5 h-5 border-2 border-green-600 rounded-full cursor-pointer"
+            ></div>
+            <div>
+              <input
+                type="text"
+                name=""
+                class="goalInput rounded-sm placeholder-gray-500 text-black outline-none w-full"
+                placeholder="add new goal..." id="first"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center h-10 p-4 border rounded-lg gap-4">
+            <div
+              name=""
+              class="checkbox flex items-center justify-center w-5 h-5 border-2 border-green-600 rounded-full cursor-pointer"
+            ></div>
+            <div>
+              <input
+                type="text"
+                name=""
+                class="goalInput rounded-sm placeholder-gray-500 text-black outline-none w-full"
+                placeholder="add new goal..." id="second"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center h-10 p-4 border rounded-lg gap-4">
+            <div
+              name=""
+              class="checkbox flex items-center justify-center w-5 h-5 border-2 border-green-600 rounded-full cursor-pointer"
+            ></div>
+            <div>
+              <input
+                type="text"
+                name=""
+                class="goalInput rounded-sm placeholder-gray-500 text-black outline-none w-full"
+                placeholder="add new goal..." id="third"
+              />
+            </div>
+          </div>
+
+          <div>
+            <h1 class="text-lg text-green-800 font-semibold text-center my-8">
+              "Keep going on, you are making greate progress!"
+            </h1>
+          </div>
+
+          <div>
+            <h1 class="text-sm text-gray-500 font-semibold text-center">
+              Made with love by me
+            </h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const checkbox = document.getElementsByClassName("checkbox");
+      const input = document.getElementsByClassName("goalInput");
+      const completeContainer = document.querySelector(".complete");
+      const worning = document.querySelector(".worning");
+      const progressBar = document.getElementById("progressBar");
+
+
+      // stroing in localStroage;
+      const allGoals= JSON.parse(localStorage.getItem('allGoals')) ||  {};
+
+      //You're saving the text (allGoals), but not the checkbox status. On reload, completed items don’t stay checked.
+      // Suggestion: Save checkbox states too:
+      let goalStates = JSON.parse(localStorage.getItem('goalStates')) || {};
+      let completedGoalCount=Object.values(goalStates).filter((goal) => goal==true).length;
+       completeContainer.innerHTML = ` <p class=" text-sm font-semibold pl-2">${completedGoalCount}/3 complete</p>`;
+
+
+
+
+      let container= JSON.parse(localStorage.getItem('container')) || {};
+      
+      
+      let count = 0;
+      
+      if(container['progress'] !==undefined){
+            progressBar.style.width = `${container['progress']}%`;
+           
+        }
+      
+      
+      
+      // Loop through each checkbox and attach the event listener
+      for (let i = 0; i < checkbox.length; i++) {
+        // Listen to text input and update localStorage
+
+
+      input[i].addEventListener("input", () => {
+        allGoals[input[i].id] = input[i].value.trim();
+        localStorage.setItem("allGoals", JSON.stringify(allGoals));
+      });
+
+
+        input[i].value  =  allGoals[input[i].id]  || "";
+
+         if (goalStates[input[i].id]) {
+           checkbox[i].classList.add("bg-green-600");
+            input[i].classList.add(
+              "line-through",
+              "text-green-600",
+              "font-semibold"
+            );
+            input[i].disabled = true;
+            checkbox[i].innerHTML =
+              '<i class="fa-solid fa-check text-white text-sm"></i>';
+            count++;
+        }
+
+         
+
+
+
+
+
+
+        checkbox[i].addEventListener("click", () => {
+          if (!checkbox[i].classList.contains("bg-green-600") && input[i].value.trim() != "") {
+
+             
+            
+             
+
+            
+            checkbox[i].classList.add("bg-green-600");
+            input[i].classList.add(
+              "line-through",
+              "text-green-600",
+              "font-semibold"
+            );
+            input[i].disabled = true;
+            checkbox[i].innerHTML =
+              '<i class="fa-solid fa-check text-white text-sm"></i>';
+               goalStates[input[i].id] = true;
+            count++;
+            
+          } else {
+            checkbox[i].classList.remove("bg-green-600");
+            input[i].classList.remove(
+              "line-through",
+              "text-green-600",
+              "font-semibold"
+            );
+            input[i].disabled = false;
+             goalStates[input[i].id] = false;
+            checkbox[i].innerHTML = "";
+
+            if (count > 0 && input[i].value.trim() != "") count--;
+          }
+
+
+          
+          
+          localStorage.setItem("goalStates", JSON.stringify(goalStates));
+          completeContainer.innerHTML = ` <p class=" text-sm font-semibold pl-2">${count}/3 complete</p>`;
+
+          
+          const progress = (count / 3) * 100;
+          progressBar.style.width = `${progress}%`;
+
+          container["progress"]=progress;
+          localStorage.setItem('container',JSON.stringify(container));
+
+          if (count < 3) {
+          worning.innerHTML = `<h1>Please complete all  3 goals!</h1>`;
+          }
+  
+          if (count == 3) {
+            worning.innerHTML = "";
+          }
+        });
+        
+        
+        
+ 
+
+            
+      }
+
+
+
+
+
+      if (count < 3) {
+          worning.innerHTML = `<h1>Please complete all  3 goals!</h1>`;
+          }
+  
+          if (count == 3) {
+            worning.innerHTML = "";
+          }
+
+      
+    </script>
+  </body>
+</html>
